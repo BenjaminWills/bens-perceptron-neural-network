@@ -10,15 +10,38 @@ class Layer:
         self.weights = weights_in
         self.biases = biases
         self.input = input
-        self.outputs = self.get_outputs()
+        self.output_weights = self.get_outputs()
 
     def get_outputs(self):
         weight_vector = self.weights * self.input + self.biases
         sigmoid_vector = Vector(
-            [Functions.sigmoid(component) for component in weight_vector]
+            [Functions.sigmoid(component) for component in Vector.unpack_vector(weight_vector)]
         )
         return sigmoid_vector
 
 class Neural_Network:
     def __init__(self,layers:Vector) -> None:
         self.layers = layers
+
+    def create_network(self):
+        pass
+
+
+if __name__ == "__main__":
+    layer = Layer(
+        2,
+        2,
+        Matrix(
+            [0.5,0.5],
+            [0.5,0.5]
+            ),
+        Vector(
+            1,
+            1
+        ),
+        Vector(
+            1,
+            1
+        )
+        )
+    layer.weights.show_matrix()
