@@ -4,7 +4,7 @@ A perceptron neural network is essentially a function of the form: $f(\bold{x}) 
 
 The sigmoid function: $\sigma(x) = \frac{1}{1+ e^{-x} }$ is used to squish outputs of perceptrons to lie within the range $[0,1]$. We will use this to calculate activation values for each node (perceptron).
 
-## Calculating Activation Values.
+## Calculating Activation Values
 
 Suppose that we are in layer $i$ of the network that has a depth of $n_i$, layer $i$ had some input vector of $\bold{x}_i \in \R^{n_i}$, to find the output vector of the $i$ th layer i.e the input to the $i+1$ th layer (which I will refer to as $\bold{x}_{i+1}$), say that the $i+1$ th layer has depth $n_{i+1}$ thus $\bold{x}_{i+1} \in \R^{n_{i+1}}$. We can calculate $\bold{x}_{i+1}$ using the weights and biases of each layer as follows:
 
@@ -19,4 +19,4 @@ w_{1,1} & \dots & w_{n_{i+1},1} \\\\ \vdots & \vdots & \vdots \\\\ w_{1,n_{i}} &
 \end{pmatrix}
 $$
 
-Where $w_{a,b}$ is the weight from node $a$ in layer $i$ to node $b$ in layer $i+1$. Secondly $b_{i+1}$ is simply the vector of biases of all of the nodes for the $i+1$ th layer.
+Where $w_{a,b}$ is the weight from node $a$ in layer $i$ to node $b$ in layer $i+1$. Secondly $\bold{b}_{i+1}$ is simply the vector of biases of all of the nodes for the $i+1$ th layer.
