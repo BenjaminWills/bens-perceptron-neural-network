@@ -14,9 +14,9 @@ Where $W_i$ is the matrix of weights connecting each vertex of layer $i$ to laye
 
 $$
 W_i =
-\begin{pmatrix}
+\begin{bmatrix}
 w_{1,1} & \dots & w_{n_{i+1},1} \\\\ \vdots & \vdots & \vdots \\\\ w_{1,n_{i}} & \dots & w_{n_{i+1},n_{i}}
-\end{pmatrix}
+\end{bmatrix}
 $$
 
 Where $w_{a,b}$ is the weight from node $a$ in layer $i$ to node $b$ in layer $i+1$. Secondly $\bold{b}_{i+1}$ is simply the vector of biases of all of the nodes for the $i+1$ th layer.
