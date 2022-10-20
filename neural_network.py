@@ -1,7 +1,9 @@
+import numpy as np
+
 from Mathematics_fundamentals.functions.functions import Functions
 from Mathematics_fundamentals.linear_algebra.linear_algebra import (Matrix,
                                                                     Vector)
-import numpy as np
+
 
 class Layer:
     def __init__(self,nodes_in:int,nodes_out:int,weights_in:Matrix,biases:Vector) -> None:
