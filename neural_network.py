@@ -26,7 +26,7 @@ class Layer:
             A matrix of weights where the (i,j) component is the weight from node i
             in first layer to node j in the second layer.
         """
-        random_matrix = [[np.random.uniform(-10,10) for i in range(self.nodes_in)] for j in range(self.nodes_out)]
+        random_matrix = [[np.random.uniform(-1,1) for i in range(self.nodes_in)] for j in range(self.nodes_out)]
         return Matrix(*random_matrix)
     def get_random_biases(self) -> Vector:
         """Will generate a vector of a random bias with the dimension of nodes_out
@@ -36,7 +36,7 @@ class Layer:
         Vector
             A vector of biases.
         """
-        r = np.random.uniform(-10,10)
+        r = np.random.uniform(-1,1)
         random_list = [r for i in range(self.nodes_out)]
         return Vector(*random_list)
 
@@ -135,8 +135,8 @@ class Neural_Network:
         outputs = self.get_output(input)
         return np.argmax(Vector.unpack_vector(outputs))
 
-    class Backpropogate:
-        pass
+class Backpropogate:
+    pass
 
 
 if __name__ == "__main__":
