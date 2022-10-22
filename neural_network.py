@@ -135,14 +135,25 @@ class Neural_Network:
         outputs = self.get_output(input)
         return np.argmax(Vector.unpack_vector(outputs))
 
-class Backpropogate:
-    pass
+    def layer_cost(self,layer_output:Vector,expected_output:Vector) -> Vector:
+        error = Vector.unpack_vector(layer_output - expected_output)
+        squared_error = [e ** 2 for e in error]
+        return Vector(*squared_error)
+
+    def cost(self,network_output:Vector,expected_output:Vector) -> float:
+        error = self.layer_cost(network_output,expected_output)
+        error_list = Vector.unpack_vector(error)
+        return sum(error_list)/expected_output.dim
+
+
 
 
 if __name__ == "__main__":
     network = Neural_Network(2,3,2)
 
     input = Vector(1,1)
+    expected_output = Vector(0.5,0.5)
 
-    network.get_output(input).show_vector()
-    print(network.classify_output(input))
+    output = network.get_output(input)
+    output.show_vector()
+    print(network.cost(output,expected_output))
