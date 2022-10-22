@@ -1,6 +1,6 @@
 # Multilayered Perceptron Project
 
-A perceptron neural network is essentially a function of the form: $f(\bold{x}) = \sigma(f_k(\dots(f_1(x_kw_1 + b_1)+b_k)\dots)$, where $\bold{x} \in \R^{n}$ and $n \in \N$ is the number of inputs into the neural network and $k \in \N$ is the number of layers.
+A perceptron neural network is essentially a function of the form: $f(\bold{x}) = \sigma(f_k(\dots(f_1(x_kw_1 + b_1)+b_k)\dots)$, where $\bold{x} \in \R^{n}$ and $n \in \N$ is the number of inputs into the neural network and $k \in \N$ is the number of layers, and $f_i(x)$ are vector valued functions that will calculate the output of the $i$'th layer.
 
 The sigmoid function: $\sigma(x) = \frac{1}{1+ e^{-x} }$ is used to squish outputs of perceptrons to lie within the range $[0,1]$. We will use this to calculate activation values for each node (perceptron).
 
@@ -23,3 +23,7 @@ $$
 Where $w_{a,b}$ is the weight from node $a$ in layer $i$ to node $b$ in layer $i+1$. Secondly $\bold{b}_{i+1}$ is simply the vector of biases of all of the nodes within the $i+1$ th layer.
 
 The end goal of all of this is to find the largest activation value at the end of the network, in other words $\max_{x\in\bold{x}_k}$
+
+The question you may have in mind is how can this network possibly learn? All of this preamble only discusses this 'static' definition of a network. The answer, as usual, is calculus!
+
+## Making the network learn
