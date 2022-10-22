@@ -8,51 +8,62 @@ from Mathematics_fundamentals.linear_algebra.linear_algebra import (Matrix,
 
 
 class Layer:
-    def __init__(self,nodes_in:int,nodes_out:int,inputs:Vector) -> None:
+    def __init__(self,nodes_in:int,nodes_out:int) -> None:
         self.nodes_in = nodes_in
         self.nodes_out = nodes_out
-        self.inputs = inputs
         self.weights = self.get_random_weights()
         self.biases = self.get_random_biases()
-        self.output_weights = self.get_outputs()
 
     def get_random_weights(self):
         random_matrix = [[np.random.uniform(-10,10) for i in range(self.nodes_in)] for j in range(self.nodes_out)]
         return Matrix(*random_matrix)
     def get_random_biases(self):
-        random_list = [np.random.uniform(-10,10) for i in range(self.nodes_in)]
+        r = np.random.uniform(-10,10)
+        random_list = [r for i in range(self.nodes_out)]
         return Vector(*random_list)
 
-    def get_outputs(self) -> Vector:
-        weight_vector = self.weights * self.inputs + self.biases
+    def get_outputs(self,inputs:Vector) -> Vector:
+        print('=================================WEIGHTS=====================================')
+        self.weights.show_matrix()
+        print('=================================INPUTS======================================')
+        inputs.show_vector()
+        print('=================================BIASES======================================')
+        self.biases.show_vector()
+        print('================================OUTPUTS======================================')
+        weight_vector = self.weights * inputs + self.biases
+        weight_vector.show_vector()
+        print('=============================END OF LOOP=====================================')
         sigmoid_vector = Vector(
-            [Functions.sigmoid(component) for component in Vector.unpack_vector(weight_vector)]
+            *[Functions.sigmoid(component) for component in Vector.unpack_vector(weight_vector)]
         )
         return sigmoid_vector
 
 class Neural_Network:
-    def __init__(self,inputs:Vector,*layer_sizes:List[int]) -> None:
+    def __init__(self,*layer_sizes:List[int]) -> None:
         self.layer_sizes = layer_sizes
-        self.inputs = inputs
         self.layers = self.create_network()
 
-    def create_network(self):
+    def create_network(self) -> List[Layer]:
         layers = []
-        inputs = self.inputs
-        for i in range(len(self.layer_sizes)):
+        for i in range(len(self.layer_sizes)-1):
             new_layer = Layer(
                         self.layer_sizes[i],
                         self.layer_sizes[i+1],
-                        inputs,
                         )
-            inputs = new_layer.get_outputs()
             layers.append(new_layer)
+        return layers
 
-    def classify_output(self) -> float:
-        outputs = self.layers[self.layer_sizes[-1]].get_outputs()
+    def get_output(self,input:Vector) -> Vector:
+        for layer in self.layers:
+            input = layer.get_outputs(input)
+        return input
+
+    def classify_output(self,input:Vector) -> float:
+        outputs = self.get_output(input)
         return np.argmax(Vector.unpack_vector(outputs))
 
 
 if __name__ == "__main__":
-    network = Neural_Network(Vector(1,1),2,3,2)
-    
+    network = Neural_Network(2,3,2,3,3,3,3,2)
+
+    network.get_output(Vector(1,1)).show_vector()
