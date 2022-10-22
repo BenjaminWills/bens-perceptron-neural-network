@@ -46,4 +46,12 @@ $$C(\bold{w},\bold{b},\bold{y}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k
 
 Our task now is to minimise $C$ with respect to the weights and biases, so that we can adjust them to make the network more accurate. To do this we must consider the gradient of $C$.
 
-$$\nabla{C} = (\frac{\partial C}{\partial w^{{1}}_{1,1}} \ ,\  \dots \ ,\frac{\partial C}{\partial b^{(1)}_{1}} \, \ \dots \ , \frac{\partial C}{\partial b^{(L)}_{L}})$$
+$$
+\nabla{C} = (
+    \frac{\partial C}{\partial w^{{1}}_{1,1}} \ ,
+    \  \dots \ ,
+    \ \frac{\partial C}{\partial w^{(L)}}_{L,n_{L}} \ ,
+    \frac{\partial C}{\partial b^{(1)}_{1}} \ ,
+    \ \dots \ ,
+    \frac{\partial C}{\partial b^{(L)}_{L}})
+$$
