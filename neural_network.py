@@ -135,6 +135,9 @@ class Neural_Network:
         outputs = self.get_output(input)
         return np.argmax(Vector.unpack_vector(outputs))
 
+    class Backpropogate:
+        pass
+
 
 if __name__ == "__main__":
     network = Neural_Network(2,3,2)
