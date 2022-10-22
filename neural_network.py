@@ -140,11 +140,17 @@ class Neural_Network:
         squared_error = [e ** 2 for e in error]
         return Vector(*squared_error)
 
-    def cost(self,network_output:Vector,expected_output:Vector) -> float:
-        error = self.layer_cost(network_output,expected_output)
+    def cost(self,input:Vector,expected_output:Vector) -> float:
+        error = self.layer_cost(self.get_output(input),expected_output)
         error_list = Vector.unpack_vector(error)
         return sum(error_list)/expected_output.dim
 
+    def learn(self,training_inputs:Vector,training_outputs:Vector) -> Vector:
+        dw = 10 ** -5
+        original_cost = self.cost(training_inputs,training_outputs)
+        weight_derivative_matrix = Matrix()
+        for layer in self.layers:
+            pass
 
 
 
