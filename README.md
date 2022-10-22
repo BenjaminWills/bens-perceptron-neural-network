@@ -27,3 +27,11 @@ The end goal of all of this is to find the largest activation value at the end o
 The question you may have in mind is how can this network possibly learn? All of this preamble only discusses this 'static' definition of a network. The answer, as usual, is calculus!
 
 ## Making the network learn
+
+To make this network be able to learn I will be using the idea of `backpropogation`. Essentially this allows us to check the performance of our network against expected data, then we can use calculus to adjust our weights and then repeat.
+
+We need a way to quantify how successful our network is. A logical step is to think about the squared error when compared to expected data, i.e if $y$ is an observed data point and $\hat{y}$ is what our neural network estimated, then $ (y - \hat{y})^2 $ is the squared error. If we were to calculate this error for each of the nodes of the output layer, then we would have $\sum_{k=1}^{n}{(y_{k} - \hat{y}_k)^2}$, it is then logical to find the average of these errors, this average square error function is called the `mean squared error` (MSE). I will be using this as the `Cost function`, $C(\bold{y},\bold{\hat{y}})$. $C: \R^{d_{output}} \rightarrow \R$
+
+$$C(\bold{y},\bold{\hat{y}}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k)^2} $$
+
+We need to look at how the `weights` and `biases` effect the value of this cost function, in an effort to minimise it, and in turn minimise the error of the network. This is where the notion of `learning` comes from: repeated iterations of optimisation given training data!
