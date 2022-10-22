@@ -34,4 +34,16 @@ We need a way to quantify how successful our network is. A logical step is to th
 
 $$C(\bold{y},\bold{\hat{y}}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k)^2} $$
 
-We need to look at how the `weights` and `biases` effect the value of this cost function, in an effort to minimise it, and in turn minimise the error of the network. This is where the notion of `learning` comes from: repeated iterations of optimisation given training data!
+We need to look at how the `weights` and `biases` effect the value of this cost function, in an effort to minimise it, and in turn minimise the error of the network. This is where the notion of `learning` comes from: repeated iterations of minimisation given training data!
+
+### Backpropogation
+
+We now need to view the cost function as a function of three variables: $\bold{w},\bold{b},\bold{y}$ which are the weights, biases and expected outputs respectively. This makes sense as $\bold{\hat{y}}$ that we saw above, is calculated using $\bold{w}$ and $\bold{b}$ so we can rewrite the cost function.
+
+`New notation alert` We will refer to the weights and biases from layer $L$ linking node $i$ from layer $L-1$ to node $j$ in layer $L$ as: $w^{(L)}_{i,j}$ and $b^{(L)}_{j}$.
+
+$$C(\bold{w},\bold{b},\bold{y}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k(w_k,b_k))^2}$$
+
+Our task now is to minimise $C$ with respect to the weights and biases, so that we can adjust them to make the network more accurate. To do this we must consider the gradient of $C$.
+
+$$\nabla{C} = (\frac{\partial C}{\partial w^{{1}}_{1,1}} \ ,\  \dots \ ,\frac{\partial C}{\partial b^{(1)}_{1}} \, \ \dots \ , \frac{\partial C}{\partial b^{(L)}_{L}})$$
