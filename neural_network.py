@@ -155,11 +155,4 @@ class Neural_Network:
 
 
 if __name__ == "__main__":
-    network = Neural_Network(2,3,2)
-
-    input = Vector(1,1)
-    expected_output = Vector(0.5,0.5)
-
-    output = network.get_output(input)
-    output.show_vector()
-    print(network.cost(output,expected_output))
+    network = Neural_Network
