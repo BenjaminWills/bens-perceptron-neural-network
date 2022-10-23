@@ -81,3 +81,12 @@ $$
 \bold{b}_{i+1} = \bold{b}_{i} - \alpha \frac{\partial C}{\partial \bold{b}}
 \end{align*}
 $$
+
+Where $\frac{\partial C}{\partial \bold{x}} = (
+    \frac{\partial C}{\partial x_1},
+    \
+    \dots
+    \
+    ,
+    \frac{\partial C}{\partial x_n}
+)$ and $\bold{x} \in\R^n$.
