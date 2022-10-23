@@ -42,7 +42,7 @@ We now need to view the cost function as a function of three variables: $\bold{w
 
 `New notation alert` We will refer to the weights and biases from layer $L$ linking node $i$ from layer $L-1$ to node $j$ in layer $L$ as: $w^{(L)}_{i,j}$ and $b^{(L)}_{j}$.
 
-$$C(\bold{w},\bold{b},\bold{y}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k(w_k,b_k))^2}$$
+$$C(\bold{w},\bold{b},\bold{x},\bold{y}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k(\bold{x},\bold{w},\bold{b}))^2}$$
 
 Our task now is to minimise $C$ with respect to the weights and biases, so that we can adjust them to make the network more accurate. To do this we must consider the gradient of $C$.
 
@@ -55,3 +55,19 @@ $$
     \ \dots \ ,
     \frac{\partial C}{\partial b^{(L)}_{L}})
 $$
+
+Analytically we can minimise $C$ (which is a convex function; thus its minimum is global), by setting $\nabla{C} = 0$, and then solving for the appropriate weights and biases. However this is not simple for a computer to calculate, thus we must resort to numerical methods to minimise C.
+
+#### Gradient descent
+
+This is a numerical method that allows us to minimise a function consisting of an arbitrary number of input variables.
+
+The method gets its name from the fact that the `gradient` of some function $f(\bold{x})$ - where $f:\R^n \rightarrow \R$ - is the direction of steepest `ascent`, thus its negative is the direction of steepest `descent` hence if we start with some point $\bold{x}_0$, we can logically move from that point to a point closer to a local minimum of $f$ by minusing some multiple of the gradient from $x_0$.
+
+$$\bold{x}_{i+1} = \bold{x}_i - \alpha \nabla{f}(\bold{x_i})$$
+
+Where $\alpha$ is the `learning rate` of the descent process. There are methods of choosing the learning rate to ensure sufficient decrease of the function.
+
+Now you may be wondering: when do we terminate this descent? How can we quantify when the function is at a minimum?
+
+Well, great questions! We define some small number $0 <\epsilon << 1$ such that when the gradient of $f$ falls within the interval $-\epsilon < \nabla f(\bold{x_{i+1}}) < \epsilon$ or equivalently $|\nabla{f(\bold{x_{i+1}})}| < \epsilon$, we terminate the process and return $\bold{x_{i+1}}$
