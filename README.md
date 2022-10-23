@@ -16,11 +16,11 @@ Where $W_i$ is the matrix of weights connecting each vertex of layer $i$ to laye
 $$
 W_i =
 \begin{bmatrix}
-w_{1,1} & \dots & w_{n_{i+1},1} \\\\ \vdots & \vdots & \vdots \\\\ w_{1,n_{i}} & \dots & w_{n_{i+1},n_{i}}
+w^{(i)}_{1,1} & \dots & w^{(i)}_{n_{i+1},1} \\\\ \vdots & \vdots & \vdots \\\\ w^{(i)}_{1,n_{i}} & \dots & w^{(i)}_{n_{i+1},n_{i}}
 \end{bmatrix}
 $$
 
-Where $w_{a,b}$ is the weight from node $a$ in layer $i$ to node $b$ in layer $i+1$. Secondly $\bold{b}_{i+1}$ is simply the vector of biases of all of the nodes within the $i+1$ th layer.
+Where $w^{(i)}_{a,b}$ is the weight from node $a$ in layer $i$ to node $b$ in layer $i+1$. Secondly $\bold{b}_{i+1}$ is simply the vector of biases of all of the nodes within the $i+1$ th layer.
 
 The end goal of all of this is to find the largest activation value at the end of the network, in other words $\max_{x\in\bold{x}_k}$
 
@@ -48,7 +48,7 @@ Our task now is to minimise $C$ with respect to the weights and biases, so that 
 
 $$
 \nabla{C} = (
-    \frac{\partial C}{\partial w^{{1}}_{1,1}} \ ,
+    \frac{\partial C}{\partial w^{{(1)}}_{1,1}} \ ,
     \  \dots \ ,
     \ \frac{\partial C}{\partial w^{(L)}}_{L,n_{L}} \ ,
     \frac{\partial C}{\partial b^{(1)}_{1}} \ ,
@@ -56,7 +56,7 @@ $$
     \frac{\partial C}{\partial b^{(L)}_{L}})
 $$
 
-Analytically we can minimise $C$ (which is a convex function; thus its minimum is global), by setting $\nabla{C} = 0$, and then solving for the appropriate weights and biases. However this is not simple for a computer to calculate, thus we must resort to numerical methods to minimise C.
+Analytically we can minimise $C$ (which is a convex function; thus its minimum is global), by setting $\nabla{C} = 0$, and then solving for the appropriate weights and biases. However this is not simple for a computer to calculate, thus we must resort to numerical methods to minimise $C$.
 
 #### Interlude into gradient descent
 
@@ -90,3 +90,5 @@ Where $\frac{\partial C}{\partial \bold{x}} = (
     ,
     \frac{\partial C}{\partial x_n}
 )$ and $\bold{x} \in\R^n$.
+
+When we run this algorithm for many training examples, we should have a functioning neural network.
