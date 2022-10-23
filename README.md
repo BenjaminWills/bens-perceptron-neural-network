@@ -58,7 +58,7 @@ $$
 
 Analytically we can minimise $C$ (which is a convex function; thus its minimum is global), by setting $\nabla{C} = 0$, and then solving for the appropriate weights and biases. However this is not simple for a computer to calculate, thus we must resort to numerical methods to minimise C.
 
-#### Gradient descent
+#### Interlude into gradient descent
 
 This is a numerical method that allows us to minimise a function consisting of an arbitrary number of input variables.
 
@@ -71,3 +71,13 @@ Where $\alpha$ is the `learning rate` of the descent process. There are methods 
 Now you may be wondering: when do we terminate this descent? How can we quantify when the function is at a minimum?
 
 Well, great questions! We define some small number $0 <\epsilon << 1$ such that when the gradient of $f$ falls within the interval $-\epsilon < \nabla f(\bold{x_{i+1}}) < \epsilon$ or equivalently $|\nabla{f(\bold{x_{i+1}})}| < \epsilon$, we terminate the process and return $\bold{x_{i+1}}$
+
+So when applying this algorithm to our use case, we intend to tweak the `weights` and `biases` of our neurons in such a way that the `MSE`, $C$, is minimised. If we split $\bold{x}$ into $\bold{x} = (\bold{w},\bold{b})$, then minimising $C$ becomes a case of running gradient descent on $C$ with this iteration rule:
+
+$$
+\begin{align*}
+\bold{w}_{i+1} = \bold{w}_{i} - \alpha \frac{\partial C}{\partial \bold{w}}
+\\
+\bold{b}_{i+1} = \bold{b}_{i} - \alpha \frac{\partial C}{\partial \bold{b}}
+\end{align*}
+$$
