@@ -7,7 +7,7 @@ from Mathematics_fundamentals.linear_algebra.linear_algebra import (Matrix,
                                                                     Vector)
 
 H = 10 ** -5
-tolerance = 10 ** -1
+tolerance = 10 ** -2
 
 class Layer:
     """
@@ -200,7 +200,7 @@ class Neural_Network:
     def learn(self,training_inputs:Vector,training_outputs:Vector,learning_rate:float = 0.5) -> Vector:
         iter_count = 0
         while self.cost(training_inputs,training_outputs) > tolerance:
-            if iter_count > 10_000:
+            if iter_count > 100_000:
                 print(f'broke on iteration {iter_count} with a cost of {self.cost(training_inputs,training_outputs)}')
                 break
             weight_derivative_list = []
@@ -216,16 +216,11 @@ class Neural_Network:
                 layer.weights -= weight_derivative_list[i] * learning_rate
                 layer.biases -= bias_derivatives_list[i] * learning_rate
             iter_count += 1
+        print(self.cost(training_inputs,training_outputs))
         return self
 
     def teach(self,training_inputs:List[Vector],training_outputs:List[Vector],learning_rate:float = 0.5) -> Vector:
         for i in range(len(training_inputs)):
-            print(i)
             self = self.learn(training_inputs[i],training_inputs[i],learning_rate)
         return self
 
-if __name__ == "__main__":
-    network = Neural_Network(1,2,2)
-    input,output = Vector(15),Vector(0,1)
-    print(network.cost(input,output))
-    network.learn(input,output)
