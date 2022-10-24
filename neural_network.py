@@ -196,7 +196,7 @@ class Neural_Network:
         derivative = (new_cost-initial_cost)/H
         return Vector(*[derivative]*dimension)
 
-    def learn(self,training_inputs:Vector,training_outputs:int,learning_rate:float = 0.5) -> Vector:
+    def learn(self,training_inputs:Vector,training_outputs:Vector,learning_rate:float = 0.5) -> Vector:
         weight_derivative_list = []
         bias_derivatives_list = []
         for layer in self.layers:
@@ -209,10 +209,12 @@ class Neural_Network:
             layer = self.layers[i]
             layer.weights -= weight_derivative_list[i] * learning_rate
             layer.biases -= bias_derivatives_list[i] * learning_rate
+        return self
 
-
-
-
+    def teach(self,training_inputs:List[Vector],training_outputs:List[Vector],learning_rate:float = 0.5) -> Vector:
+        for i in range(len(training_inputs)):
+            self = self.learn(training_inputs,training_inputs,learning_rate)
+        return self
 
 if __name__ == "__main__":
     network = Neural_Network(1,2,2)
