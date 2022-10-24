@@ -144,7 +144,9 @@ class Neural_Network:
         return Vector(*squared_error)
 
     def cost(self,input:Vector,expected_output:Vector) -> float:
-        error = self.layer_cost(self.get_output(input),expected_output)
+        error = self.layer_cost(
+            Vector(self.classify_output(input)),
+            expected_output)
         error_list = Vector.unpack_vector(error)
         return sum(error_list)/expected_output.dim
 
@@ -157,9 +159,10 @@ class Neural_Network:
         rows = weights.rows
         columns = weights.columns
 
-        derivatives = [[]*rows]
+        derivatives = []
 
         for i in range(rows):
+            derivatives.append([])
             for j in range(columns):
                 weight_matrix = weights.matrix
                 weight_matrix[i][j] += H
@@ -182,7 +185,7 @@ class Neural_Network:
         derivative = (new_cost-initial_cost)/H
         return Vector(*[derivative]*dimension)
 
-    def learn(self,learning_rate:float,training_inputs:Vector,training_outputs:int) -> Vector:
+    def learn(self,training_inputs:Vector,training_outputs:int,learning_rate:float = 0.5) -> Vector:
         weight_derivative_list = []
         bias_derivatives_list = []
         for layer in self.layers:
@@ -193,8 +196,8 @@ class Neural_Network:
         
         for i in range(len(weight_derivative_list)):
             layer = self.layers[i]
-            layer.weights += learning_rate * weight_derivative_list[i]
-            layer.biases += learning_rate * bias_derivatives[i]
+            layer.weights -= weight_derivative_list[i] * learning_rate
+            layer.biases -= bias_derivatives_list[i] * learning_rate
 
 
 
@@ -202,3 +205,5 @@ class Neural_Network:
 
 if __name__ == "__main__":
     network = Neural_Network(1,2,2)
+    input,output = Vector(15),Vector(1)
+    network.learn(input,output)
