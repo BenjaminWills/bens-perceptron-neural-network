@@ -1,5 +1,4 @@
-from os import stat
-from typing import Callable, List
+from typing import List
 
 import numpy as np
 
