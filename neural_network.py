@@ -7,6 +7,7 @@ from Mathematics_fundamentals.linear_algebra.linear_algebra import (Matrix,
                                                                     Vector)
 
 H = 10 ** -5
+tolerance = 10 ** -2
 
 class Layer:
     """
@@ -197,18 +198,19 @@ class Neural_Network:
         return Vector(*[derivative]*dimension)
 
     def learn(self,training_inputs:Vector,training_outputs:Vector,learning_rate:float = 0.5) -> Vector:
-        weight_derivative_list = []
-        bias_derivatives_list = []
-        for layer in self.layers:
-            weight_derivatives = self.get_weight_derivative(layer,training_inputs,training_outputs)
-            bias_derivatives = self.get_bias_derivative(layer,training_inputs,training_outputs)
-            weight_derivative_list.append(weight_derivatives)
-            bias_derivatives_list.append(bias_derivatives)
-        
-        for i in range(len(weight_derivative_list)):
-            layer = self.layers[i]
-            layer.weights -= weight_derivative_list[i] * learning_rate
-            layer.biases -= bias_derivatives_list[i] * learning_rate
+        while self.cost(training_inputs,training_outputs) > tolerance:
+            weight_derivative_list = []
+            bias_derivatives_list = []
+            for layer in self.layers:
+                weight_derivatives = self.get_weight_derivative(layer,training_inputs,training_outputs)
+                bias_derivatives = self.get_bias_derivative(layer,training_inputs,training_outputs)
+                weight_derivative_list.append(weight_derivatives)
+                bias_derivatives_list.append(bias_derivatives)
+            
+            for i in range(len(weight_derivative_list)):
+                layer = self.layers[i]
+                layer.weights -= weight_derivative_list[i] * learning_rate
+                layer.biases -= bias_derivatives_list[i] * learning_rate
         return self
 
     def teach(self,training_inputs:List[Vector],training_outputs:List[Vector],learning_rate:float = 0.5) -> Vector:
