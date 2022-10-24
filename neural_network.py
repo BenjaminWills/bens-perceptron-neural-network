@@ -13,11 +13,11 @@ class Layer:
     """
     Will describe a singular layer in a perceptron neural network.
     """
-    def __init__(self,nodes_in:int,nodes_out:int) -> None:
+    def __init__(self,nodes_in:int,nodes_out:int, weights:Matrix = None, biases:Vector = None) -> None:
         self.nodes_in = nodes_in
         self.nodes_out = nodes_out
-        self.weights = self.get_random_weights()
-        self.biases = self.get_random_biases()
+        self.weights = self.get_random_weights() if not weights else weights
+        self.biases = self.get_random_biases() if not biases else biases
 
     def get_random_weights(self) -> Matrix:
         """Will get a random weight matrix with dimensions nodes_in x nodes_out
@@ -30,6 +30,7 @@ class Layer:
         """
         random_matrix = [[np.random.uniform(-1,1) for i in range(self.nodes_in)] for j in range(self.nodes_out)]
         return Matrix(*random_matrix)
+
     def get_random_biases(self) -> Vector:
         """Will generate a vector of a random bias with the dimension of nodes_out
 
@@ -139,13 +140,25 @@ class Neural_Network:
         return np.argmax(Vector.unpack_vector(outputs))
 
     def layer_cost(self,layer_output:Vector,expected_output:Vector) -> Vector:
+        """Calculates the cost for a given layer
+
+        Parameters
+        ----------
+        layer_output : Vector
+        expected_output : Vector
+
+        Returns
+        -------
+        Vector
+            Will return a vector of cost for each output
+        """
         error = Vector.unpack_vector(layer_output - expected_output)
         squared_error = [e ** 2 for e in error]
         return Vector(*squared_error)
 
     def cost(self,input:Vector,expected_output:Vector) -> float:
         error = self.layer_cost(
-            Vector(self.classify_output(input)),
+            self.get_output(input),
             expected_output)
         error_list = Vector.unpack_vector(error)
         return sum(error_list)/expected_output.dim
@@ -173,7 +186,6 @@ class Neural_Network:
                 layer.weights = weights
         return Matrix(*derivatives)
 
-    
     def get_bias_derivative(self,layer:Layer,input:Vector,output:Vector) -> Vector:
         biases = layer.biases
         initial_cost = self.cost(input,output)
@@ -205,5 +217,6 @@ class Neural_Network:
 
 if __name__ == "__main__":
     network = Neural_Network(1,2,2)
-    input,output = Vector(15),Vector(1)
+    input,output = Vector(15),Vector(0,1)
+    print(network.cost(input,output))
     network.learn(input,output)
