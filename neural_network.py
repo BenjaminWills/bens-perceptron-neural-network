@@ -1,4 +1,5 @@
-from typing import List
+from os import stat
+from typing import Callable, List
 
 import numpy as np
 
@@ -6,6 +7,7 @@ from Mathematics_fundamentals.functions.functions import Functions
 from Mathematics_fundamentals.linear_algebra.linear_algebra import (Matrix,
                                                                     Vector)
 
+H = 10 ** -5
 
 class Layer:
     """
@@ -69,7 +71,8 @@ class Layer:
         else:         
             weight_vector = self.weights * inputs + self.biases
         sigmoid_vector = Vector(
-            *[Functions.sigmoid(component) for component in Vector.unpack_vector(weight_vector)]
+            *[Functions.sigmoid(component) 
+            for component in Vector.unpack_vector(weight_vector)]
         )
         return sigmoid_vector
 
@@ -145,14 +148,57 @@ class Neural_Network:
         error_list = Vector.unpack_vector(error)
         return sum(error_list)/expected_output.dim
 
-    def learn(self,training_inputs:Vector,training_outputs:Vector) -> Vector:
-        dw = 10 ** -5
-        original_cost = self.cost(training_inputs,training_outputs)
-        weight_derivative_matrix = Matrix()
+    
+    def get_weight_derivative(self,layer:Layer,input:Vector,output:Vector) -> Matrix:
+        weights = layer.weights
+
+        initial_cost = self.cost(input,output)
+
+        rows = weights.rows
+        columns = weights.columns
+
+        derivatives = [[]*rows]
+
+        for i in range(rows):
+            for j in range(columns):
+                weight_matrix = weights.matrix
+                weight_matrix[i][j] += H
+                layer.weights = Matrix(*weight_matrix)
+                updated_cost = self.cost(input,output)
+                derivative = (updated_cost - initial_cost)/H
+                derivatives[i].append(derivative)
+                layer.weights = weights
+        return Matrix(*derivatives)
+
+    
+    def get_bias_derivative(self,layer:Layer,input:Vector,output:Vector) -> Vector:
+        biases = layer.biases
+        initial_cost = self.cost(input,output)
+        dimension = biases.dim
+        offset_vector = Vector(*[H]*dimension)
+        new_biases = layer.biases + offset_vector
+        layer.biases = new_biases
+        new_cost = self.cost(input,output)
+        derivative = (new_cost-initial_cost)/H
+        return Vector(*[derivative]*dimension)
+
+    def learn(self,learning_rate:float,training_inputs:Vector,training_outputs:int) -> Vector:
+        weight_derivative_list = []
+        bias_derivatives_list = []
         for layer in self.layers:
-            pass
+            weight_derivatives = self.get_weight_derivative(layer,training_inputs,training_outputs)
+            bias_derivatives = self.get_bias_derivative(layer,training_inputs,training_outputs)
+            weight_derivative_list.append(weight_derivatives)
+            bias_derivatives_list.append(bias_derivatives)
+        
+        for i in range(len(weight_derivative_list)):
+            layer = self.layers[i]
+            layer.weights += learning_rate * weight_derivative_list[i]
+            layer.biases += learning_rate * bias_derivatives[i]
+
+
 
 
 
 if __name__ == "__main__":
-    network = Neural_Network
+    network = Neural_Network(1,2,2)
