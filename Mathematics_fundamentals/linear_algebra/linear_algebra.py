@@ -184,10 +184,8 @@ class Matrix:
 
     @staticmethod
     def numpy_to_matrix(np_matrix):
-        ben_matrix = Matrix()
         rows,columns = np_matrix.shape
-        for row in range(rows):
-            ben_matrix.add_rows(np_matrix[row,:])
+        ben_matrix = Matrix(*np_matrix.tolist())
         return ben_matrix
 
     def get_inverted_matrix(self):
