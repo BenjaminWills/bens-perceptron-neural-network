@@ -17,6 +17,14 @@ class Matrix:
         else:
             self.columns = 0
 
+    def __sub__(self,other):
+        matrix_list = self.matrix
+        other_matrix_list = other.matrix
+        matrix = np.matrix(matrix_list)
+        other_matrix = np.matrix(other_matrix_list)
+        difference = matrix - other_matrix
+        return self.numpy_to_matrix(difference)
+
     def __mul__(self,other):
         """
         Matrix multiplication works by multiplying rows by columns pairwise. Thus if mat1
