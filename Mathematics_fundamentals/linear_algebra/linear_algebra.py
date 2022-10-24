@@ -17,6 +17,22 @@ class Matrix:
         else:
             self.columns = 0
 
+    def __add__(self,other):
+        matrix_list = self.matrix
+        other_matrix_list = other.matrix
+        matrix = np.matrix(matrix_list)
+        other_matrix = np.matrix(other_matrix_list)
+        difference = matrix + other_matrix
+        return self.numpy_to_matrix(difference)
+
+    def __sub__(self,other):
+        matrix_list = self.matrix
+        other_matrix_list = other.matrix
+        matrix = np.matrix(matrix_list)
+        other_matrix = np.matrix(other_matrix_list)
+        difference = matrix - other_matrix
+        return self.numpy_to_matrix(difference)
+
     def __mul__(self,other):
         """
         Matrix multiplication works by multiplying rows by columns pairwise. Thus if mat1
@@ -168,10 +184,8 @@ class Matrix:
 
     @staticmethod
     def numpy_to_matrix(np_matrix):
-        ben_matrix = Matrix()
         rows,columns = np_matrix.shape
-        for row in range(rows):
-            ben_matrix.add_rows(np_matrix[row,:])
+        ben_matrix = Matrix(*np_matrix.tolist())
         return ben_matrix
 
     def get_inverted_matrix(self):

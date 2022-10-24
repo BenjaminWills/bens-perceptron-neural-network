@@ -6,16 +6,18 @@ from Mathematics_fundamentals.functions.functions import Functions
 from Mathematics_fundamentals.linear_algebra.linear_algebra import (Matrix,
                                                                     Vector)
 
+H = 10 ** -5
+tolerance = 10 ** -1
 
 class Layer:
     """
     Will describe a singular layer in a perceptron neural network.
     """
-    def __init__(self,nodes_in:int,nodes_out:int) -> None:
+    def __init__(self,nodes_in:int,nodes_out:int, weights:Matrix = None, biases:Vector = None) -> None:
         self.nodes_in = nodes_in
         self.nodes_out = nodes_out
-        self.weights = self.get_random_weights()
-        self.biases = self.get_random_biases()
+        self.weights = self.get_random_weights() if not weights else weights
+        self.biases = self.get_random_biases() if not biases else biases
 
     def get_random_weights(self) -> Matrix:
         """Will get a random weight matrix with dimensions nodes_in x nodes_out
@@ -26,8 +28,9 @@ class Layer:
             A matrix of weights where the (i,j) component is the weight from node i
             in first layer to node j in the second layer.
         """
-        random_matrix = [[np.random.uniform(-10,10) for i in range(self.nodes_in)] for j in range(self.nodes_out)]
+        random_matrix = [[np.random.uniform(-1,1) for i in range(self.nodes_in)] for j in range(self.nodes_out)]
         return Matrix(*random_matrix)
+
     def get_random_biases(self) -> Vector:
         """Will generate a vector of a random bias with the dimension of nodes_out
 
@@ -36,7 +39,7 @@ class Layer:
         Vector
             A vector of biases.
         """
-        r = np.random.uniform(-10,10)
+        r = np.random.uniform(-1,1)
         random_list = [r for i in range(self.nodes_out)]
         return Vector(*random_list)
 
@@ -69,7 +72,8 @@ class Layer:
         else:         
             weight_vector = self.weights * inputs + self.biases
         sigmoid_vector = Vector(
-            *[Functions.sigmoid(component) for component in Vector.unpack_vector(weight_vector)]
+            *[Functions.sigmoid(component) 
+            for component in Vector.unpack_vector(weight_vector)]
         )
         return sigmoid_vector
 
@@ -135,11 +139,93 @@ class Neural_Network:
         outputs = self.get_output(input)
         return np.argmax(Vector.unpack_vector(outputs))
 
+    def layer_cost(self,layer_output:Vector,expected_output:Vector) -> Vector:
+        """Calculates the cost for a given layer
+
+        Parameters
+        ----------
+        layer_output : Vector
+        expected_output : Vector
+
+        Returns
+        -------
+        Vector
+            Will return a vector of cost for each output
+        """
+        error = Vector.unpack_vector(layer_output - expected_output)
+        squared_error = [e ** 2 for e in error]
+        return Vector(*squared_error)
+
+    def cost(self,input:Vector,expected_output:Vector) -> float:
+        error = self.layer_cost(
+            self.get_output(input),
+            expected_output)
+        error_list = Vector.unpack_vector(error)
+        return sum(error_list)/expected_output.dim
+
+    
+    def get_weight_derivative(self,layer:Layer,input:Vector,output:Vector) -> Matrix:
+        weights = layer.weights
+
+        initial_cost = self.cost(input,output)
+
+        rows = weights.rows
+        columns = weights.columns
+
+        derivatives = []
+
+        for i in range(rows):
+            derivatives.append([])
+            for j in range(columns):
+                weight_matrix = weights.matrix
+                weight_matrix[i][j] += H
+                layer.weights = Matrix(*weight_matrix)
+                updated_cost = self.cost(input,output)
+                derivative = (updated_cost - initial_cost)/H
+                derivatives[i].append(derivative)
+                layer.weights = weights
+        return Matrix(*derivatives)
+
+    def get_bias_derivative(self,layer:Layer,input:Vector,output:Vector) -> Vector:
+        biases = layer.biases
+        initial_cost = self.cost(input,output)
+        dimension = biases.dim
+        offset_vector = Vector(*[H]*dimension)
+        new_biases = layer.biases + offset_vector
+        layer.biases = new_biases
+        new_cost = self.cost(input,output)
+        derivative = (new_cost-initial_cost)/H
+        return Vector(*[derivative]*dimension)
+
+    def learn(self,training_inputs:Vector,training_outputs:Vector,learning_rate:float = 0.5) -> Vector:
+        iter_count = 0
+        while self.cost(training_inputs,training_outputs) > tolerance:
+            if iter_count > 10_000:
+                print(f'broke on iteration {iter_count} with a cost of {self.cost(training_inputs,training_outputs)}')
+                break
+            weight_derivative_list = []
+            bias_derivatives_list = []
+            for layer in self.layers:
+                weight_derivatives = self.get_weight_derivative(layer,training_inputs,training_outputs)
+                bias_derivatives = self.get_bias_derivative(layer,training_inputs,training_outputs)
+                weight_derivative_list.append(weight_derivatives)
+                bias_derivatives_list.append(bias_derivatives)
+            
+            for i in range(len(weight_derivative_list)):
+                layer = self.layers[i]
+                layer.weights -= weight_derivative_list[i] * learning_rate
+                layer.biases -= bias_derivatives_list[i] * learning_rate
+            iter_count += 1
+        return self
+
+    def teach(self,training_inputs:List[Vector],training_outputs:List[Vector],learning_rate:float = 0.5) -> Vector:
+        for i in range(len(training_inputs)):
+            print(i)
+            self = self.learn(training_inputs[i],training_inputs[i],learning_rate)
+        return self
 
 if __name__ == "__main__":
-    network = Neural_Network(2,3,2)
-
-    input = Vector(1,1)
-
-    network.get_output(input).show_vector()
-    print(network.classify_output(input))
+    network = Neural_Network(1,2,2)
+    input,output = Vector(15),Vector(0,1)
+    print(network.cost(input,output))
+    network.learn(input,output)
