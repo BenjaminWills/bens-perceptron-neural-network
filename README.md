@@ -40,7 +40,7 @@ We need to look at how the `weights` and `biases` effect the value of this cost 
 
 We now need to view the cost function as a function of three variables: $\bold{w},\bold{b},\bold{y}$ which are the weights, biases and expected outputs respectively. This makes sense as $\bold{\hat{y}}$ that we saw above, is calculated using $\bold{w}$ and $\bold{b}$ so we can rewrite the cost function.
 
-`New notation alert` We will refer to the weights and biases from layer $L$ linking node $i$ from layer $L-1$ to node $j$ in layer $L$ as: $w^{(L)}_{i,j}$ and $b^{(L)}_{j}$.
+`New notation alert` We will refer to the weights and biases from layer $L$ linking node $i$ from layer $L$ to node $j$ in layer $L+1$ as: $w^{(L)}_{i,j}$ and $b^{(L)}_{j}$.
 
 $$C(\bold{w},\bold{b},\bold{x},\bold{y}) = \frac{1}{n}  \sum_{k=1}^{n}{(y_{k} - \hat{y}_k(\bold{x},\bold{w},\bold{b}))^2}$$
 
