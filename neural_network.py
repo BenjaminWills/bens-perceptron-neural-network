@@ -157,6 +157,18 @@ class Neural_Network:
         return Vector(*squared_error)
 
     def cost(self,input:Vector,expected_output:Vector) -> float:
+        """Will find the cost of the whole network. (MSE)
+
+        Parameters
+        ----------
+        input : Vector
+        expected_output : Vector
+
+        Returns
+        -------
+        float
+            Cost of the network.
+        """
         error = self.layer_cost(
             self.get_output(input),
             expected_output)
@@ -164,7 +176,21 @@ class Neural_Network:
         return sum(error_list)/expected_output.dim
 
     
-    def get_weight_derivative(self,layer:Layer,input:Vector,output:Vector) -> Matrix:
+    def get_weight_derivative(self,layer_number:int,layer:Layer,input:Vector,output:Vector) -> Matrix:
+        """Will find the derivative of the cost w.r.t that weight on the cost function
+
+        Parameters
+        ----------
+        layer : Layer
+            Layer that weights belong to
+        input : Vector
+        output : Vector
+
+        Returns
+        -------
+        Matrix
+            Matrix containing the partial derivatives.
+        """
         weights = layer.weights
 
         initial_cost = self.cost(input,output)
@@ -177,37 +203,72 @@ class Neural_Network:
         for i in range(rows):
             derivatives.append([])
             for j in range(columns):
+                layer_copy = layer
                 weight_matrix = weights.matrix
                 weight_matrix[i][j] += H
-                layer.weights = Matrix(*weight_matrix)
+                layer_copy.weights = Matrix(*weight_matrix)
+                self.layers[layer_number] = layer_copy
                 updated_cost = self.cost(input,output)
                 derivative = (updated_cost - initial_cost)/H
                 derivatives[i].append(derivative)
-                layer.weights = weights
+                self.layers[layer_number] = layer
         return Matrix(*derivatives)
 
-    def get_bias_derivative(self,layer:Layer,input:Vector,output:Vector) -> Vector:
+    def get_bias_derivative(self,layer_number:int,layer:Layer,input:Vector,output:Vector) -> Vector:
+        """Will get a vector of the derivative of the cost w.r.t the bias of the given layer
+
+        Parameters
+        ----------
+        layer_number : int
+            Index of the layer
+        layer : Layer
+            The layer to whom the biases belong
+        input : Vector
+        output : Vector
+
+        Returns
+        -------
+        Vector
+            vector of the derivative of the cost w.r.t the bias of the given layer 
+        """
         biases = layer.biases
+        layer_copy = layer
         initial_cost = self.cost(input,output)
         dimension = biases.dim
         offset_vector = Vector(*[H]*dimension)
         new_biases = layer.biases + offset_vector
-        layer.biases = new_biases
+        layer_copy.biases = new_biases
+        self.layers[layer_number] = layer_copy
         new_cost = self.cost(input,output)
         derivative = (new_cost-initial_cost)/H
+        self.layers[layer_number] = layer
         return Vector(*[derivative]*dimension)
 
-    def learn(self,training_inputs:Vector,training_outputs:Vector,learning_rate:float = 0.5) -> Vector:
+    def learn(self,training_inputs:Vector,training_outputs:Vector,learning_rate:float = 0.5):
+        """Updates the weights of the network to minimise the cost function using gradient descent.
+
+        Parameters
+        ----------
+        training_inputs : Vector
+        training_outputs : Vector
+        learning_rate : float, optional
+            Determines the learning rate, by default 0.5
+
+        Returns
+        -------
+        Neural_Network
+            An updated network with new weights
+        """
         iter_count = 0
         while self.cost(training_inputs,training_outputs) > tolerance:
-            if iter_count > 100_000:
+            if iter_count > 10_000:
                 print(f'broke on iteration {iter_count} with a cost of {self.cost(training_inputs,training_outputs)}')
                 break
             weight_derivative_list = []
             bias_derivatives_list = []
-            for layer in self.layers:
-                weight_derivatives = self.get_weight_derivative(layer,training_inputs,training_outputs)
-                bias_derivatives = self.get_bias_derivative(layer,training_inputs,training_outputs)
+            for index,layer in enumerate(self.layers):
+                weight_derivatives = self.get_weight_derivative(index,layer,training_inputs,training_outputs)
+                bias_derivatives = self.get_bias_derivative(index,layer,training_inputs,training_outputs)
                 weight_derivative_list.append(weight_derivatives)
                 bias_derivatives_list.append(bias_derivatives)
             
@@ -219,7 +280,23 @@ class Neural_Network:
         print(self.cost(training_inputs,training_outputs))
         return self
 
-    def teach(self,training_inputs:List[Vector],training_outputs:List[Vector],learning_rate:float = 0.5) -> Vector:
+    def teach(self,training_inputs:List[Vector],training_outputs:List[Vector],learning_rate:float = 0.5):
+        """_summary_
+
+        Parameters
+        ----------
+        training_inputs : List[Vector]
+            _description_
+        training_outputs : List[Vector]
+            _description_
+        learning_rate : float, optional
+            _description_, by default 0.5
+
+        Returns
+        -------
+        Neural_Network
+            _description_
+        """
         for i in range(len(training_inputs)):
             self = self.learn(training_inputs[i],training_inputs[i],learning_rate)
         return self
